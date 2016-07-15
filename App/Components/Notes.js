@@ -17,13 +17,13 @@ export default class Notes extends Component {
     notes: PropTypes.object.isRequired
   }
 
+  ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2})
+
   state = {
-    dataSource: this.ds.cloneWithRows(this.props.notes),
+    dataSource: this.ds.cloneWithRows(Object.values(this.props.notes)),
     note: '',
     error: ''
   }
-
-  ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2})
 
   handleSubmit = () => {
     const note = this.state.note;
@@ -35,7 +35,7 @@ export default class Notes extends Component {
         getNotes(this.props.userInfo.login)
           .then(data => {
             this.setState({
-              dataSource: this.ds.cloneWithRows(data)
+              dataSource: this.ds.cloneWithRows(Object.values(data))
             })
           })
       }).catch(err => {
@@ -75,6 +75,7 @@ export default class Notes extends Component {
     return (
       <View style={styles.container}>
         <ListView
+          enableEmptySections
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}
           renderHeader={
